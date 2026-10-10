@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Fast Flyers — make a printable club flyer in minutes." />
+  <title>Fast Flyers — Make a flyer in minutes</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Fast Flyers home">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>Fast<span class="brand-accent">Flyers</span></span>
+      </a>
+      <div class="topbar-actions">
+        <span class="saved-status"><span class="status-dot"></span> Saved just now</span>
+        <button class="button button-ghost" id="newFlyerBtn">New flyer</button>
+        <button class="button button-primary" id="exportBtn"><span aria-hidden="true">↗</span> Export PDF</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="tool-panel" aria-label="Flyer tools">
+        <div class="panel-intro">
+          <div class="eyebrow">Your toolkit</div>
+          <h1>Make it pop.<br /><span>Keep it simple.</span></h1>
+          <p>Add the essentials, then get back to running your club.</p>
+        </div>
+
+        <div class="tool-group">
+          <div class="group-label">Add to flyer</div>
+          <button class="tool-button active" id="selectToolBtn">
+            <span class="tool-icon cursor-icon-small">↖</span>
+            <span><strong>Cursor</strong><small>Move anything around</small></span>
+            <span class="shortcut">V</span>
+          </button>
+          <button class="tool-button" id="resizeToolBtn">
+            <span class="tool-icon resize-icon">↘</span>
+            <span><strong>Resize</strong><small>Scale anything up or down</small></span>
+            <span class="shortcut">R</span>
+          </button>
+          <button class="tool-button" id="addTextBtn">
+            <span class="tool-icon text-icon">T</span>
+            <span><strong>Text</strong><small>Title, details, anything</small></span>
+            <span class="shortcut">T</span>
+          </button>
+          <button class="tool-button" id="addImageBtn">
+            <span class="tool-icon image-icon"><span></span></span>
+            <span><strong>Image</strong><small>Add a photo or logo</small></span>
+            <span class="shortcut">I</span>
+          </button>
+          <button class="tool-button" id="drawToolBtn">
+            <span class="tool-icon draw-icon">✎</span>
+            <span><strong>Draw</strong><small>Add a hand-drawn detail</small></span>
+            <span class="shortcut">D</span>
+          </button>
+          <button class="tool-button" id="eraseToolBtn">
+            <span class="tool-icon erase-icon">⌫</span>
+            <span><strong>Erase</strong><small>Remove painted marks</small></span>
+            <span class="shortcut">E</span>
+          </button>
+          <button class="tool-button" id="deleteToolBtn">
+            <span class="tool-icon delete-icon">×</span>
+            <span><strong>Delete</strong><small>Remove selected item</small></span>
+            <span class="shortcut">Del</span>
+          </button>
+          <button class="tool-button" id="shapeToolBtn">
+            <span class="tool-icon shape-icon">○</span>
+            <span><strong>Shapes</strong><small>Square, circle, oval</small></span>
+            <span class="shortcut">S</span>
+          </button>
+          <div class="shape-picker" id="shapePicker" hidden>
+            <button data-shape="square"><span class="shape-preview shape-square"></span>Square</button>
+            <button data-shape="circle"><span class="shape-preview shape-circle"></span>Circle</button>
+            <button data-shape="oval"><span class="shape-preview shape-oval"></span>Oval</button>
+          </div>
+          <input type="file" id="imageInput" accept="image/*" hidden />
+        </div>
+
+        <div class="tool-group color-group">
+          <div class="group-label">Flyer color</div>
+          <div class="swatches" role="group" aria-label="Choose flyer background color">
+            <button class="swatch active" data-color="#f8f4eb" style="--swatch:#f8f4eb" aria-label="Warm paper"></button>
+            <button class="swatch" data-color="#e8f0ed" style="--swatch:#e8f0ed" aria-label="Mint"></button>
+            <button class="swatch" data-color="#edeafa" style="--swatch:#edeafa" aria-label="Lavender"></button>
+            <button class="swatch" data-color="#fff0e5" style="--swatch:#fff0e5" aria-label="Peach"></button>
+            <button class="swatch" data-color="#19272a" style="--swatch:#19272a" aria-label="Ink"></button>
+            <label class="custom-color" aria-label="Choose custom flyer color"><input type="color" id="customColor" value="#f8f4eb" /><span>+</span></label>
+          </div>
+        </div>
+
+        <div class="tool-group alignment-group">
+          <div class="group-label">Alignment</div>
+          <label class="check-control"><input type="checkbox" id="showGrid" checked /><span class="check-box"></span><span>Show grid</span></label>
+          <div class="snap-row"><label class="check-control"><input type="checkbox" id="snapGrid" checked /><span class="check-box"></span><span>Snap to grid</span></label><select id="gridSize" aria-label="Grid step"><option value="5">5%</option><option value="10">10%</option></select></div>
+        </div>
+
+        <div class="tool-group dimensions-group">
+          <div class="group-label">Canvas dimensions</div>
+          <select id="dimensionsSelect" aria-label="Canvas dimensions">
+            <option value="letter">Letter · 8.5:11</option>
+            <option value="portrait">Portrait · 9:16</option>
+            <option value="landscape">Landscape · 16:9</option>
+            <option value="square">Square · 1:1</option>
+          </select>
+          <p>Choose a ready-to-print canvas ratio.</p>
+        </div>
+
+        <div class="tip-card">
+          <span class="tip-icon">✦</span>
+          <div><strong>Quick tip</strong><p>One big idea beats five tiny ones. Give your headline room to breathe.</p></div>
+        </div>
+        <div class="panel-footer"><span>FAST FLYERS</span><span>01 / 01</span></div>
+      </aside>
+
+      <section class="canvas-stage" aria-label="Flyer editor">
+        <div class="stage-header">
+          <div><span class="live-dot"></span> Live preview</div>
+          <div class="stage-note">Cursor: drag anything to move it <span>·</span> Double-click text to edit</div>
+        </div>
+        <div class="canvas-wrap">
+          <div class="flyer-canvas" id="flyerCanvas" tabindex="0" aria-label="Editable flyer canvas">
+            <div class="paper-grid" aria-hidden="true"></div>
+            <canvas class="draw-layer" id="drawLayer" aria-label="Drawing layer"></canvas>
+            <div class="resize-overlay" id="resizeOverlay" hidden aria-hidden="true"><span class="resize-handle" id="resizeHandle"></span></div>
+            <div class="selection-hint" id="selectionHint">Your flyer starts blank — add something from the toolkit</div>
+          </div>
+        </div>
+        <div class="canvas-footer"><span>LETTER · PORTRAIT</span><span>100%</span></div>
+      </section>
+
+      <aside class="properties-panel" aria-label="Selected element settings">
+        <div class="properties-header"><span class="eyebrow">Inspector</span><span class="selection-count">No selection</span></div>
+        <div class="empty-inspector" id="emptyInspector">
+          <div class="cursor-icon">⌁</div>
+          <h2>Select something</h2>
+          <p>Click text on your flyer to edit it, or add a new element from the toolkit.</p>
+        </div>
+        <div class="text-inspector" id="textInspector" hidden>
+          <label for="textContent">Text</label>
+          <textarea id="textContent" rows="4" placeholder="Type something..."></textarea>
+          <div class="inspector-row color-row">
+            <label for="textColor">Color</label>
+            <div class="color-picker-wrap"><div class="mini-swatches"><button class="mini-swatch" data-text-color="#19272a" style="--swatch:#19272a" aria-label="Ink text"></button><button class="mini-swatch" data-text-color="#f36f56" style="--swatch:#f36f56" aria-label="Coral text"></button><button class="mini-swatch" data-text-color="#5e8c77" style="--swatch:#5e8c77" aria-label="Sage text"></button></div><input type="color" id="textColor" value="#19272a" aria-label="Custom text color" /></div>
+          </div>
+          <div class="inspector-row">
+            <label for="fontSize">Size</label>
+            <select id="fontSize"><option value="small">Small</option><option value="medium" selected>Medium</option><option value="large">Large</option><option value="xl">XL</option></select>
+          </div>
+          <div class="inspector-row">
+            <label for="textAlign">Align</label>
+            <div class="align-buttons" role="group"><button data-align="left" class="active" aria-label="Align left">≡</button><button data-align="center" aria-label="Align center">≡</button><button data-align="right" aria-label="Align right">≡</button></div>
+          </div>
+          <button class="delete-button" id="deleteElement">Delete element</button>
+        </div>
+        <div class="image-inspector" id="imageInspector" hidden>
+          <label for="imageSize">Image size</label>
+          <div class="range-row"><input type="range" id="imageSize" min="15" max="68" value="32" /><output id="imageSizeValue">32%</output></div>
+          <p class="inspector-help">Drag the image on the flyer to reposition it.</p>
+          <button class="delete-button" id="deleteImage">Delete image</button>
+        </div>
+        <div class="shape-inspector" id="shapeInspector" hidden>
+          <label for="shapeColor">Shape color</label>
+          <div class="shape-color-row"><div class="mini-swatches"><button class="mini-swatch" data-shape-color="#f36f56" style="--swatch:#f36f56" aria-label="Coral shape"></button><button class="mini-swatch" data-shape-color="#19272a" style="--swatch:#19272a" aria-label="Ink shape"></button><button class="mini-swatch" data-shape-color="#5e8c77" style="--swatch:#5e8c77" aria-label="Sage shape"></button></div><input type="color" id="shapeColor" value="#f36f56" aria-label="Custom shape color" /></div>
+          <div class="inspector-row"><label for="shapeSize">Size</label><div class="range-row"><input type="range" id="shapeSize" min="8" max="52" value="18" /><output id="shapeSizeValue">18%</output></div></div>
+          <button class="delete-button" id="deleteShape">Delete shape</button>
+        </div>
+        <div class="draw-inspector" id="drawInspector" hidden>
+          <label>Draw color</label>
+          <div class="draw-swatches" role="group" aria-label="Choose drawing color">
+            <button class="draw-swatch active" data-draw-color="#f36f56" style="--swatch:#f36f56" aria-label="Coral drawing"></button>
+            <button class="draw-swatch" data-draw-color="#19272a" style="--swatch:#19272a" aria-label="Ink drawing"></button>
+            <button class="draw-swatch" data-draw-color="#5e8c77" style="--swatch:#5e8c77" aria-label="Sage drawing"></button>
+            <button class="draw-swatch" data-draw-color="#f7cf69" style="--swatch:#f7cf69" aria-label="Yellow drawing"></button>
+            <input type="color" id="drawColor" value="#f36f56" aria-label="Custom drawing color" />
+          </div>
+          <div class="inspector-row brush-row"><label for="brushSize">Brush</label><div class="range-row"><input type="range" id="brushSize" min="2" max="24" value="6" /><output id="brushSizeValue">6px</output></div></div>
+          <button class="clear-drawing" id="clearDrawing">Clear drawing</button>
+        </div>
+        <div class="properties-bottom"><span>Simple by design</span><span>⌘ + K</span></div>
+      </aside>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="script.js"></script>
+</body>
+</html>
