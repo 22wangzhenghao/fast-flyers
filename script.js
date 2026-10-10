@@ -35,6 +35,7 @@ const showGrid = document.getElementById('showGrid');
 const snapGrid = document.getElementById('snapGrid');
 const gridSize = document.getElementById('gridSize');
 const dimensionsSelect = document.getElementById('dimensionsSelect');
+const customColor = document.getElementById('customColor');
 let selectedElement = null;
 let toastTimer;
 let drawMode = false;
@@ -346,27 +347,121 @@ imageInput.addEventListener('change', (event) => {
   event.target.value = '';
 });
 
-function createShape(type) {
+function createShape(type, options = {}) {
   setToolMode('select');
   shapePicker.hidden = true;
   shapeToolBtn.classList.remove('active');
   const element = document.createElement('div');
-  const size = type === 'oval' ? 25 : 18;
+  const size = options.size || (type === 'oval' ? 25 : 18);
   element.className = `flyer-element shape-element shape-${type}`;
   element.dataset.type = 'shape';
   element.dataset.shape = type;
   element.dataset.size = size;
-  element.dataset.color = '#f36f56';
-  element.style.left = '38%';
-  element.style.top = '39%';
+  element.dataset.color = options.color || '#f36f56';
+  element.style.left = `${options.left ?? 38}%`;
+  element.style.top = `${options.top ?? 39}%`;
   element.style.width = `${size}%`;
-  element.style.background = '#f36f56';
-  if (type === 'oval') element.style.height = '11%';
+  element.style.background = options.color || '#f36f56';
+  if (type === 'oval') element.style.height = `${options.height || 11}%`;
   else element.style.height = `${size}%`;
+  if (options.border) element.style.border = options.border;
   canvas.appendChild(element);
   registerElement(element);
   selectElement(element);
-  showToast(`${type[0].toUpperCase()}${type.slice(1)} added — drag to move it`);
+  if (!options.silent) showToast(`${type[0].toUpperCase()}${type.slice(1)} added — drag to move it`);
+  return element;
+}
+
+function createTemplateText(options) {
+  const element = document.createElement('div');
+  element.className = `flyer-element template-text ${options.className || ''}`;
+  element.dataset.type = 'text';
+  element.dataset.editable = 'true';
+  element.dataset.size = options.size || 'medium';
+  element.dataset.color = options.color || '#19272a';
+  element.style.left = `${options.left}%`;
+  element.style.top = `${options.top}%`;
+  element.style.maxWidth = options.maxWidth || '78%';
+  element.style.color = options.color || '#19272a';
+  element.style.font = options.font || '500 14px/1.45 "DM Sans", sans-serif';
+  element.style.whiteSpace = 'pre-line';
+  if (options.letterSpacing) element.style.letterSpacing = options.letterSpacing;
+  if (options.align) element.style.textAlign = options.align;
+  element.textContent = options.text;
+  canvas.appendChild(element);
+  registerElement(element);
+  return element;
+}
+
+const templates = {
+  club: {
+    name: 'Club meeting',
+    background: '#e8f0ed',
+    elements: [
+      { type: 'text', text: 'YOUR NEXT CHAPTER\nSTARTS HERE.', left: 9, top: 13, color: '#19272a', font: '700 clamp(32px, 7vw, 54px)/.9 "Space Grotesk", sans-serif', className: 'template-title' },
+      { type: 'text', text: 'ART + DESIGN CLUB\nTUESDAY · 3:30 PM\nROOM 204', left: 10, top: 55, color: '#5e6d6d', font: '600 13px/1.6 "DM Mono", monospace', letterSpacing: '.5px' },
+      { type: 'text', text: 'ALL SKILL LEVELS WELCOME  →', left: 10, top: 86, color: '#f36f56', font: '600 11px "DM Mono", monospace', letterSpacing: '1px' },
+      { type: 'shape', shape: 'circle', left: 66, top: 18, size: 25, color: '#afc5b3' },
+      { type: 'shape', shape: 'oval', left: 66, top: 72, size: 24, height: 10, color: '#f36f56' },
+    ],
+  },
+  bake: {
+    name: 'Bake sale',
+    background: '#fff0e5',
+    elements: [
+      { type: 'text', text: '$5\nBAKE SALE', left: 9, top: 14, color: '#c7624d', font: '700 clamp(44px, 9vw, 68px)/.84 "Space Grotesk", sans-serif', className: 'template-title' },
+      { type: 'text', text: 'FRIDAY · COURTYARD\n11 AM — 2 PM', left: 10, top: 57, color: '#7d655c', font: '600 14px/1.65 "DM Mono", monospace', letterSpacing: '.5px' },
+      { type: 'text', text: 'COOKIES · BROWNIES · CAKE', left: 10, top: 86, color: '#19272a', font: '600 10px "DM Mono", monospace', letterSpacing: '1px' },
+      { type: 'shape', shape: 'square', left: 66, top: 22, size: 25, color: '#f7cf69' },
+      { type: 'shape', shape: 'circle', left: 69, top: 70, size: 16, color: '#f36f56' },
+    ],
+  },
+  movie: {
+    name: 'Movie night',
+    background: '#edeafa',
+    elements: [
+      { type: 'text', text: 'MOVIE\nNIGHT', left: 9, top: 14, color: '#5e4e80', font: '700 clamp(48px, 10vw, 74px)/.8 "Space Grotesk", sans-serif', className: 'template-title' },
+      { type: 'text', text: 'FRIDAY · 7 PM\nAUDITORIUM', left: 10, top: 57, color: '#746d83', font: '600 14px/1.65 "DM Mono", monospace', letterSpacing: '.5px' },
+      { type: 'text', text: 'FREE POPCORN · BRING A BLANKET', left: 10, top: 86, color: '#19272a', font: '600 10px "DM Mono", monospace', letterSpacing: '1px' },
+      { type: 'shape', shape: 'circle', left: 68, top: 20, size: 25, color: '#5e4e80' },
+      { type: 'shape', shape: 'oval', left: 62, top: 69, size: 28, height: 11, color: '#f36f56' },
+    ],
+  },
+};
+
+function clearFlyerContent() {
+  document.querySelectorAll('.flyer-element').forEach((element) => element.remove());
+  if (drawContext) {
+    const rect = drawLayer.getBoundingClientRect();
+    drawContext.clearRect(0, 0, rect.width, rect.height);
+  }
+  hideResizeOverlay();
+  setToolMode('select');
+  selectElement(null);
+}
+
+function setFlyerColor(color) {
+  canvas.style.background = color;
+  customColor.value = color;
+  document.querySelectorAll('.swatch').forEach((item) => item.classList.toggle('active', item.dataset.color === color));
+}
+
+function loadTemplate(templateKey) {
+  const template = templates[templateKey];
+  if (!template) return;
+  if (document.querySelectorAll('.flyer-element').length && !confirm(`Replace the current flyer with the ${template.name} template?`)) return;
+  clearFlyerContent();
+  setFlyerColor(template.background);
+  dimensionsSelect.value = 'letter';
+  canvas.dataset.dimensions = 'letter';
+  canvas.style.aspectRatio = '8.5 / 11';
+  syncDrawCanvas();
+  template.elements.forEach((item) => {
+    if (item.type === 'text') createTemplateText(item);
+    if (item.type === 'shape') createShape(item.shape, { ...item, silent: true });
+  });
+  selectElement(null);
+  showToast(`${template.name} template loaded`);
 }
 
 shapeToolBtn.addEventListener('click', () => {
@@ -375,6 +470,7 @@ shapeToolBtn.addEventListener('click', () => {
   shapeToolBtn.classList.toggle('active', !shapePicker.hidden);
 });
 document.querySelectorAll('[data-shape]').forEach((button) => button.addEventListener('click', () => createShape(button.dataset.shape)));
+document.querySelectorAll('[data-template]').forEach((button) => button.addEventListener('click', () => loadTemplate(button.dataset.template)));
 
 textContent.addEventListener('input', () => {
   if (!selectedElement) return;
@@ -431,11 +527,10 @@ document.querySelectorAll('[data-align]').forEach((button) => button.addEventLis
 }));
 
 document.querySelectorAll('.swatch').forEach((swatch) => swatch.addEventListener('click', () => {
-  canvas.style.background = swatch.dataset.color;
-  document.querySelectorAll('.swatch').forEach((item) => item.classList.toggle('active', item === swatch));
+  setFlyerColor(swatch.dataset.color);
   showToast('Flyer color updated');
 }));
-document.getElementById('customColor').addEventListener('input', (event) => {
+customColor.addEventListener('input', (event) => {
   canvas.style.background = event.target.value;
   document.querySelectorAll('.swatch').forEach((item) => item.classList.remove('active'));
 });
